@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Input, Text } from "@mantine/core";
 import { TodoItemType } from "@/types/types";
-import AddTodo from "@/components/AddTodo/AddTodo";
+import { IconDeviceIpadPlus } from "@tabler/icons-react";
 import ListTodo from "@/components/ListTodo/ListTodo";
 import { useRouter } from "next/router";
 import Container from "@/components/Container/Container";
+import { CloseButton } from "@mantine/core";
 
 const Home = () => {
   const router = useRouter();
@@ -65,18 +66,29 @@ const Home = () => {
   };
 
   const handleEdit = (id: number) =>
-    router.push({ pathname: "/edit/[id]", query: { id } });
+    router.push({ pathname: "/tasks/[id]/edit", query: { id } });
+
+  const handleAdd = () => router.push("/tasks/new");
 
   return (
     <Container>
-      <Input
-        placeholder="Search Todo List"
-        className="w-full md:w-1/2 lg:w-1/3"
-        value={searchValue}
-        variant="filled"
-        onChange={handleSearch}
-      />
-      <AddTodo onCreate={getTodoList} />
+      <div className="flex w-full md:w-1/2 lg:w-1/3 items-center">
+        <Input
+          placeholder="Search Todo List"
+          className="w-full mr-4"
+          value={searchValue}
+          variant="filled"
+          onChange={handleSearch}
+        />
+        <CloseButton
+          variant="filled"
+          color="gray"
+          icon={<IconDeviceIpadPlus />}
+          onClick={handleAdd}
+        />
+      </div>
+
+      {/* <AddTodo onCreate={getTodoList} /> */}
       {apiError && <Text c="red">{apiError}</Text>}
       <div className="grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4 w-full gap-4">
         {searchResult.length > 0 &&

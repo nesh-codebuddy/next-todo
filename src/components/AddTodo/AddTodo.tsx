@@ -1,37 +1,47 @@
 import React, { useState } from "react";
 import { Input, Text } from "@mantine/core";
 import { Button } from "@mantine/core";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { TodoItemType } from "@/types/types";
 
 interface AppTodo {
   onCreate: Function;
 }
 
 const AddTodo = ({ onCreate }: AppTodo) => {
-  const [currentTodo, setCurrentTodo] = useState<string>("");
-  const [error, setError] = useState<boolean>(false);
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm<TodoItemType>();
+  //   const [currentTodo, setCurrentTodo] = useState<string>("");
+  //   const [error, setError] = useState<boolean>(false);
   const [apiError, setApiError] = useState<string>("");
 
-  const handleTodoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const {
-      target: { value },
-    } = event;
-    if (error) setError(false);
-    setCurrentTodo(value);
-  };
+  //   const handleTodoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //     const {
+  //       target: { value },
+  //     } = event;
+  //     if (error) setError(false);
+  //     setCurrentTodo(value);
+  //   };
 
-  const onSubmit = async () => {
-    if (!currentTodo) {
-      setError(true);
-      return;
-    }
+  const onSubmit: SubmitHandler<TodoItemType> = async (data) => {
+    // if (!currentTodo) {
+    //   setError(true);
+    //   return;
+    // }
     try {
       const resp = await fetch("/tasks", {
         method: "POST",
-        body: JSON.stringify(currentTodo),
+        body: JSON.stringify(data.title),
       });
       if (resp.status === 200) {
         onCreate();
-        setCurrentTodo("");
+        setValue("title", "");
+        // setCurrentTodo("");
       }
     } catch (error: any) {
       setApiError(error.msg);
@@ -40,21 +50,28 @@ const AddTodo = ({ onCreate }: AppTodo) => {
 
   return (
     <>
-      <div className="mt-6 flex justify-center w-full md:w-1/2 lg:w-1/3">
-        <Input
-          placeholder="Add A New Todo"
-          value={currentTodo}
-          variant="filled"
-          size="sm"
-          onChange={handleTodoChange}
-          className="flex-1 mr-3"
-          error={error}
-        />
-        <Button variant="filled" color="gray" onClick={onSubmit}>
-          Submit
-        </Button>
-      </div>
-      {apiError && <Text c="red">{apiError}</Text>}
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="w-full md:w-1/2 lg:w-1/3"
+      >
+        <div className="mt-6 flex justify-center w-full">
+          <Input
+            placeholder="Add A New Todo"
+            // value={currentTodo}
+            variant="filled"
+            size="sm"
+            //   onChange={handleTodoChange}
+            className="flex-1 mr-3"
+            // error={error}
+            {...register("title", { required: true })}
+          />
+          <Button variant="filled" color="gray" type="submit">
+            Submit
+          </Button>
+        </div>
+        {errors.title && <Text c="red">This is a required field</Text>}
+        {apiError && <Text c="red">{apiError}</Text>}
+      </form>
     </>
   );
 };
