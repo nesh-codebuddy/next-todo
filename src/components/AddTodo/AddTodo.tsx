@@ -4,11 +4,11 @@ import { Button } from "@mantine/core";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { TodoItemType } from "@/types/types";
 
-interface AppTodo {
+interface AddTodoInterface {
   onCreate: Function;
 }
 
-const AddTodo = ({ onCreate }: AppTodo) => {
+const AddTodo: React.FC<AddTodoInterface> = ({ onCreate }) => {
   const {
     register,
     handleSubmit,
