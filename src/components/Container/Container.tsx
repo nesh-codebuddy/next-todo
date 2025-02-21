@@ -5,7 +5,11 @@ interface ContainerInterface {
 }
 
 const Container: React.FC<ContainerInterface> = ({ children }) => {
-  return <div className="lg:container mx-auto p-6 flex flex-col items-center">{children}</div>;
+  return (
+    <div className="lg:container mx-auto p-6 flex flex-col items-center">
+      {children}
+    </div>
+  );
 };
 
 export default Container;
