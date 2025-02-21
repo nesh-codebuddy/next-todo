@@ -37,8 +37,7 @@ const NewTodo = () => {
       } else {
         setError("title", { type: "manual", message: "Something went wrong" });
       }
-    } catch (error: any) {
-      console.log("error", error);
+    } catch (error) {
       setError("title", { type: "manual", message: "Something went wrong" });
     }
   };

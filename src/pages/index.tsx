@@ -42,7 +42,7 @@ const Home = () => {
     }
   }, [todoList]);
 
-  const handleSearch = (event: any) => {
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement> | { target: { value: string } }) => {
     const {
       target: { value },
     } = event;
