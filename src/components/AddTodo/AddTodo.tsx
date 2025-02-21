@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { Input, Text } from "@mantine/core";
 import { Button } from "@mantine/core";
 
-interface AppTodo {
+interface AddTodoInterface {
   onCreate: Function;
 }
 
-const AddTodo = ({ onCreate }: AppTodo) => {
+const AddTodo: React.FC<AddTodoInterface> = ({ onCreate }) => {
   const [currentTodo, setCurrentTodo] = useState<string>("");
   const [error, setError] = useState<boolean>(false);
   const [apiError, setApiError] = useState<string>("");

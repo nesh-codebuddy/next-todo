@@ -4,14 +4,17 @@ import styles from "./ListTodo.module.css";
 import { Button } from "@mantine/core";
 import { TodoItemType } from "../../types/types";
 
-interface ListTodo {
+interface ListTodoInterface {
   todo: TodoItemType;
   deleteTodo: React.MouseEventHandler<HTMLButtonElement>;
   editTodo: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-const ListTodo = (props: ListTodo) => {
-  const { todo, deleteTodo, editTodo } = props;
+const ListTodo: React.FC<ListTodoInterface> = ({
+  todo,
+  deleteTodo,
+  editTodo,
+}) => {
   return (
     <div
       className="flex flex-row sm:flex-col mt-4 w-full border-2 p-2 rounded-lg border-gray-700 hover:border-gray-400"
