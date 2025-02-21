@@ -7,7 +7,7 @@ import Container from "../Container/Container";
 // On Submit, Register and errors are three props will are required to be passed to this component
 interface TodoForm {
   onSubmit: React.FormEventHandler<HTMLFormElement>;
-  register: UseFormRegister<TodoFormType>;
+  register: UseFormRegister<TodoFormType> | UseFormRegister<TodoItemType>;
   errors: FieldErrors<TodoItemType>;
   isEdit?: boolean;
 }

@@ -94,4 +94,24 @@ export const todoCRUD = [
       return HttpResponse.json({ msg: "No Id Found" }, { status: 500 });
     }
   }),
+
+  //Search API
+  http.post("/tasks/search", async ({ request }) => {
+    let store: string = localStorage.getItem("todoData") || "";
+    let todoData = store ? JSON.parse(store) : [];
+    const searchTodoTitle = await request.json();
+    if(!searchTodoTitle) {
+      return HttpResponse.json([], { status: 200 });
+    }
+    if (todoData.length === 0) {
+      return HttpResponse.json({ msg: "No Todo to Search" }, { status: 500 });
+    }
+    const values = todoData.filter((todo: TodoItemType) =>
+      todo.title
+        .toLowerCase()
+        .includes(searchTodoTitle?.toString().toLowerCase()!)
+    );
+    console.log("values", values);
+    return HttpResponse.json(values, { status: 200 });
+  }),
 ];
