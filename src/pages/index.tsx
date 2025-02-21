@@ -13,7 +13,7 @@ const Home = () => {
   const router = useRouter();
   const [searchValue, setSearchValue] = useState("");
   const [searchResult, setSearchResult] = useState<Array<TodoItemType>>([]);
-  const [apiError, setApiError] = useState<string>("");
+  const [apiError, setApiError] = useState<string | Error>("");
 
   const queryClient = useQueryClient();
   const { data: todoList, isFetching } = useQuery({
@@ -27,7 +27,7 @@ const Home = () => {
     }
   }, [todoList]);
 
-  const handleSearch = (event: any) => {
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement> | { target: { value: string } }) => {
     const {
       target: { value },
     } = event;
