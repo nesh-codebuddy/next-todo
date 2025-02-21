@@ -13,6 +13,7 @@ const Home = () => {
   const router = useRouter();
   const [searchValue, setSearchValue] = useState("");
   const [searchResult, setSearchResult] = useState<Array<TodoItemType>>([]);
+  const [apiError, setApiError] = useState<string>("");
 
   const queryClient = useQueryClient();
   const {
@@ -35,13 +36,18 @@ const Home = () => {
     onSuccess: (data) => {
       setSearchResult(data);
     },
-    onError: (error) => {},
+    onError: (error) => {
+      setApiError(error.message);
+    },
   });
 
   const deleteTodo = useMutation({
     mutationFn: deleteTodoById,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["todos"] });
+    },
+    onError: (error) => {
+      setApiError(error.message);
     },
   });
 
@@ -88,6 +94,7 @@ const Home = () => {
 
       {/* <AddTodo onCreate={getTodoList} /> */}
       {error && <Text c="red">{error?.message}</Text>}
+      {apiError && <Text c="red">{apiError}</Text>}
       {searchValue && searchResult.length === 0 && (
         <Text className="text !mt-4">No Search Result Found</Text>
       )}
