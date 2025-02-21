@@ -63,7 +63,6 @@ const EditTodo = () => {
   });
   // Replace this with react query mutation
   const onUpdate: SubmitHandler<TodoItemType> = async (todoData) => {
-    console.log("todoData", todoData);
     updateTodoMutation.mutate(todoData);
   };
 

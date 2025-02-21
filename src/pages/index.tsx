@@ -7,16 +7,20 @@ import { useRouter } from "next/router";
 import Container from "@/components/Container/Container";
 import { CloseButton } from "@mantine/core";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteTodoById, getTodoList } from "@/services/queries";
+import { deleteTodoById, getTodoList, searchTodo } from "@/services/queries";
 
 const Home = () => {
   const router = useRouter();
   const [searchValue, setSearchValue] = useState("");
   const [searchResult, setSearchResult] = useState<Array<TodoItemType>>([]);
-  const [apiError, setApiError] = useState<string | Error>("");
+  const [apiError, setApiError] = useState<string>("");
 
   const queryClient = useQueryClient();
-  const { data: todoList, isFetching } = useQuery({
+  const {
+    data: todoList = [],
+    isFetching,
+    error,
+  } = useQuery({
     queryKey: ["todos"],
     queryFn: getTodoList,
   });
@@ -27,22 +31,23 @@ const Home = () => {
     }
   }, [todoList]);
 
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement> | { target: { value: string } }) => {
-    const {
-      target: { value },
-    } = event;
-    setSearchValue(value);
-    if (!value) return;
-    const values = todoList.filter((todo: TodoItemType) =>
-      todo.title.toLowerCase().includes(value.toLowerCase())
-    );
-    setSearchResult(values);
-  };
+  const handleSearchMutation = useMutation({
+    mutationFn: searchTodo,
+    onSuccess: (data) => {
+      setSearchResult(data);
+    },
+    onError: (error) => {
+      setApiError(error.message);
+    },
+  });
 
   const deleteTodo = useMutation({
     mutationFn: deleteTodoById,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["todos"] });
+    },
+    onError: (error) => {
+      setApiError(error.message);
     },
   });
 
@@ -50,6 +55,16 @@ const Home = () => {
     router.push({ pathname: "/tasks/[id]/edit", query: { id } });
 
   const handleAdd = () => router.push("/tasks/new");
+
+  const handleSearch = (
+    event: React.ChangeEvent<HTMLInputElement> | { target: { value: string } }
+  ) => {
+    const {
+      target: { value },
+    } = event;
+    setSearchValue(value);
+    handleSearchMutation.mutate(value);
+  };
 
   if (isFetching) {
     return (
@@ -78,7 +93,8 @@ const Home = () => {
       </div>
 
       {/* <AddTodo onCreate={getTodoList} /> */}
-      {apiError && <Text c="red">{`${apiError}`}</Text>}
+      {error && <Text c="red">{error?.message}</Text>}
+      {apiError && <Text c="red">{apiError}</Text>}
       {searchValue && searchResult.length === 0 && (
         <Text className="text !mt-4">No Search Result Found</Text>
       )}
