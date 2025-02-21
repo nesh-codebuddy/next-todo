@@ -2,14 +2,14 @@ import Container from "@/components/Container/Container";
 import { TodoItemType } from "@/types/types";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { Button, Textarea } from "@mantine/core";
+import { Button, Text, Textarea } from "@mantine/core";
 
 const EditTodo = () => {
   const router = useRouter();
   const id = router.query.id;
 
   const [error, setError] = useState<boolean>(false);
-  const [apiError, setApiError] = useState<string>("");
+  const [apiError, setApiError] = useState<string | Error>("");
   const [currentTodo, setCurrentTodo] = useState<TodoItemType>({
     id: 0,
     title: "",
@@ -21,9 +21,15 @@ const EditTodo = () => {
         method: "GET",
       });
       const todoData = await list.json();
-      setCurrentTodo(todoData);
-    } catch (error: any) {
-      console.log("error", error);
+      if (list.status === 200) {
+        setCurrentTodo(todoData);
+      } else {
+        setApiError(todoData.msg);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        setApiError(error);
+      }
     }
   };
 
@@ -51,9 +57,13 @@ const EditTodo = () => {
       console.log("data", data);
       if (resp.status === 200) {
         router.back();
+      } else {
+        setApiError(data.msg);
       }
     } catch (error) {
-      console.log("error", error);
+      if (error instanceof Error) {
+        setApiError(error);
+      }
     }
   };
 
@@ -71,6 +81,7 @@ const EditTodo = () => {
         value={currentTodo.title}
         onChange={handleEdit}
       />
+      {apiError && <Text c="red">{`${apiError}`}</Text>}
       <Button
         variant="filled"
         color="gray"
