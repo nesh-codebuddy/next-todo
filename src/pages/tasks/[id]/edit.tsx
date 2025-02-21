@@ -1,7 +1,7 @@
 import Container from "@/components/Container/Container";
 import { TodoItemType } from "@/types/types";
 import { useRouter } from "next/router";
-import React, { use, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import TodoForm from "@/components/TodoForm.tsx/TodoForm";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -44,6 +44,13 @@ const EditTodo = () => {
     queryFn: () => getTodoById(parseInt(id)),
   });
 
+  useEffect(() => {
+    if (todoData) {
+      setValue("id", todoData.id);
+      setValue("title", todoData.title);
+    }
+  }, [todoData]);
+
   const updateTodoMutation = useMutation({
     mutationFn: updateTodoData,
     onSuccess: () => {
@@ -70,11 +77,6 @@ const EditTodo = () => {
 
   if (error) {
     setError("title", { type: "manual", message: "Something went wrong" });
-  }
-
-  if (todoData) {
-    setValue("id", todoData.id);
-    setValue("title", todoData.title);
   }
 
   return (

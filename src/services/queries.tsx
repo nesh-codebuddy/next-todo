@@ -64,9 +64,9 @@ export const createTodo = async (todoData: TodoFormType) => {
       body: JSON.stringify(todoData.title),
     });
     if (resp.status === 200) {
-        return "Todo Created"
+      return "Todo Created";
     } else {
-        throw new Error("Something went wrong");
+      throw new Error("Something went wrong");
     }
   } catch (error: any) {
     throw new Error("Something went wrong");

@@ -42,7 +42,7 @@ const Home = () => {
   const deleteTodo = useMutation({
     mutationFn: deleteTodoById,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["todo"] });
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
     },
   });
 
@@ -79,6 +79,12 @@ const Home = () => {
 
       {/* <AddTodo onCreate={getTodoList} /> */}
       {apiError && <Text c="red">{apiError}</Text>}
+      {searchValue && searchResult.length === 0 && (
+        <Text className="text !mt-4">No Search Result Found</Text>
+      )}
+      {todoList.length === 0 && !searchValue && (
+        <Text className="text !mt-4">No Results Found</Text>
+      )}
       <div className="grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4 w-full gap-4">
         {searchResult.length > 0 &&
           searchValue &&
@@ -90,6 +96,7 @@ const Home = () => {
               key={todo.id}
             />
           ))}
+
         {todoList.length > 0 &&
           !searchValue &&
           todoList.map((todo: TodoItemType) => (
