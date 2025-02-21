@@ -18,7 +18,7 @@ const AddTodo = ({ onCreate }: AppTodo) => {
   } = useForm<TodoItemType>();
   //   const [currentTodo, setCurrentTodo] = useState<string>("");
   //   const [error, setError] = useState<boolean>(false);
-  const [apiError, setApiError] = useState<string>("");
+  const [apiError, setApiError] = useState<string | Error>("");
 
   //   const handleTodoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   //     const {
@@ -38,13 +38,18 @@ const AddTodo = ({ onCreate }: AppTodo) => {
         method: "POST",
         body: JSON.stringify(data.title),
       });
+      const todoResp = await resp.json();
       if (resp.status === 200) {
         onCreate();
         setValue("title", "");
         // setCurrentTodo("");
+      } else {
+        setApiError(todoResp.msg);
       }
-    } catch (error: any) {
-      setApiError(error.msg);
+    } catch (error) {
+      if(error instanceof Error) {
+        setApiError(error);
+      }
     }
   };
 
@@ -70,7 +75,7 @@ const AddTodo = ({ onCreate }: AppTodo) => {
           </Button>
         </div>
         {errors.title && <Text c="red">This is a required field</Text>}
-        {apiError && <Text c="red">{apiError}</Text>}
+        {apiError && <Text c="red">{`${apiError}`}</Text>}
       </form>
     </>
   );

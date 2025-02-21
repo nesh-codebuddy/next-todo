@@ -1,13 +1,13 @@
-import { TodoItemType } from "@/types/types";
+import { TodoFormType, TodoItemType } from "@/types/types";
 import { Button, Input, Text } from "@mantine/core";
 import React from "react";
-import { FieldErrors } from "react-hook-form";
+import { FieldErrors, UseFormRegister } from "react-hook-form";
 import Container from "../Container/Container";
 
 // On Submit, Register and errors are three props will are required to be passed to this component
 interface TodoForm {
   onSubmit: React.FormEventHandler<HTMLFormElement>;
-  register: any;
+  register: UseFormRegister<TodoFormType>;
   errors: FieldErrors<TodoItemType>;
   isEdit?: boolean;
 }
