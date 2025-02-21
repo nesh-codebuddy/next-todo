@@ -12,7 +12,7 @@ const Home = () => {
   const [todoList, setTodoList] = useState<Array<TodoItemType>>([]);
   const [searchValue, setSearchValue] = useState("");
   const [searchResult, setSearchResult] = useState<Array<TodoItemType>>([]);
-  const [apiError, setApiError] = useState<string>("");
+  const [apiError, setApiError] = useState<string | Error>("");
 
   const getTodoList = async () => {
     try {
@@ -20,11 +20,15 @@ const Home = () => {
         method: "GET",
       });
       const todoData = await list.json();
-      console.log("list", todoData);
-      setTodoList(todoData);
-    } catch (error: any) {
-      console.log("error", error);
-      setApiError(error.msg);
+      if (list.status === 200) {
+        setTodoList(todoData);
+      } else {
+        setApiError(todoData.msg);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        setApiError(error);
+      }
     }
   };
 
@@ -56,12 +60,16 @@ const Home = () => {
         method: "DELETE",
       });
       console.log("resp", resp);
+      const todoData = await resp.json();
       if (resp.status === 200) {
         getTodoList();
+      } else {
+        setApiError(todoData.msg);
       }
-    } catch (error: any) {
-      console.log("error", error);
-      setApiError(error.msg);
+    } catch (error) {
+      if (error instanceof Error) {
+        setApiError(error);
+      }
     }
   };
 
