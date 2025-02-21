@@ -78,7 +78,7 @@ const Home = () => {
       </div>
 
       {/* <AddTodo onCreate={getTodoList} /> */}
-      {apiError && <Text c="red">{apiError}</Text>}
+      {apiError && <Text c="red">{`${apiError}`}</Text>}
       {searchValue && searchResult.length === 0 && (
         <Text className="text !mt-4">No Search Result Found</Text>
       )}
