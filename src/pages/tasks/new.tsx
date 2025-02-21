@@ -4,7 +4,9 @@ import { TodoFormType } from "@/types/types";
 import { useRouter } from "next/router";
 import TodoForm from "@/components/TodoForm.tsx/TodoForm";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 import * as yup from "yup";
+import { createTodo } from "@/services/queries";
 
 const schema = yup
   .object({
@@ -24,23 +26,22 @@ const NewTodo = () => {
   });
 
   const router = useRouter();
+  const queryClient = useQueryClient();
 
-  const onSubmit: SubmitHandler<TodoFormType> = async (data) => {
-    try {
-      const resp = await fetch("/tasks", {
-        method: "POST",
-        body: JSON.stringify(data.title),
-      });
-      if (resp.status === 200) {
-        setValue("title", "");
-        router.back();
-      } else {
-        setError("title", { type: "manual", message: "Something went wrong" });
-      }
-    } catch (error: any) {
-      console.log("error", error);
+  const createTodoMutation = useMutation({
+    mutationFn: createTodo,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["todo"] });
+      router.back();
+      setValue("title", "");
+    },
+    onError: () => {
       setError("title", { type: "manual", message: "Something went wrong" });
-    }
+    },
+  });
+
+  const onSubmit: SubmitHandler<TodoFormType> = (data) => {
+    createTodoMutation.mutate(data);
   };
 
   return (

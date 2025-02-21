@@ -1,36 +1,25 @@
 import React, { useState, useEffect } from "react";
-import { Input, Text } from "@mantine/core";
+import { Input, Text, Center, Loader } from "@mantine/core";
 import { TodoItemType } from "@/types/types";
 import { IconDeviceIpadPlus } from "@tabler/icons-react";
 import ListTodo from "@/components/ListTodo/ListTodo";
 import { useRouter } from "next/router";
 import Container from "@/components/Container/Container";
 import { CloseButton } from "@mantine/core";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteTodoById, getTodoList } from "@/services/queries";
 
 const Home = () => {
   const router = useRouter();
-  const [todoList, setTodoList] = useState<Array<TodoItemType>>([]);
   const [searchValue, setSearchValue] = useState("");
   const [searchResult, setSearchResult] = useState<Array<TodoItemType>>([]);
   const [apiError, setApiError] = useState<string>("");
 
-  const getTodoList = async () => {
-    try {
-      const list = await fetch("/tasks", {
-        method: "GET",
-      });
-      const todoData = await list.json();
-      console.log("list", todoData);
-      setTodoList(todoData);
-    } catch (error: any) {
-      console.log("error", error);
-      setApiError(error.msg);
-    }
-  };
-
-  useEffect(() => {
-    setTimeout(getTodoList, 200);
-  }, []);
+  const queryClient = useQueryClient();
+  const { data: todoList, isFetching } = useQuery({
+    queryKey: ["todos"],
+    queryFn: getTodoList,
+  });
 
   useEffect(() => {
     if (searchValue) {
@@ -50,25 +39,25 @@ const Home = () => {
     setSearchResult(values);
   };
 
-  const handleDelete = async (id: number) => {
-    try {
-      const resp = await fetch(`/tasks/${id}`, {
-        method: "DELETE",
-      });
-      console.log("resp", resp);
-      if (resp.status === 200) {
-        getTodoList();
-      }
-    } catch (error: any) {
-      console.log("error", error);
-      setApiError(error.msg);
-    }
-  };
+  const deleteTodo = useMutation({
+    mutationFn: deleteTodoById,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["todo"] });
+    },
+  });
 
   const handleEdit = (id: number) =>
     router.push({ pathname: "/tasks/[id]/edit", query: { id } });
 
   const handleAdd = () => router.push("/tasks/new");
+
+  if (isFetching) {
+    return (
+      <Center className="h-screen">
+        <Loader />
+      </Center>
+    );
+  }
 
   return (
     <Container>
@@ -96,17 +85,17 @@ const Home = () => {
           searchResult.map((todo) => (
             <ListTodo
               todo={todo}
-              deleteTodo={() => handleDelete(todo.id)}
+              deleteTodo={() => deleteTodo.mutate(todo.id)}
               editTodo={() => handleEdit(todo.id)}
               key={todo.id}
             />
           ))}
         {todoList.length > 0 &&
           !searchValue &&
-          todoList.map((todo) => (
+          todoList.map((todo: TodoItemType) => (
             <ListTodo
               todo={todo}
-              deleteTodo={() => handleDelete(todo.id)}
+              deleteTodo={() => deleteTodo.mutate(todo.id)}
               editTodo={() => handleEdit(todo.id)}
               key={todo.id}
             />

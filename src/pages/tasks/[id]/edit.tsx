@@ -1,11 +1,14 @@
 import Container from "@/components/Container/Container";
 import { TodoItemType } from "@/types/types";
 import { useRouter } from "next/router";
-import React, { useEffect } from "react";
+import React, { use, useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import TodoForm from "@/components/TodoForm.tsx/TodoForm";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as yup from "yup";
+import { getTodoById, updateTodoData } from "@/services/queries";
+import { Loader, Center } from "@mantine/core";
 
 const schema = yup
   .object({
@@ -25,51 +28,54 @@ const EditTodo = () => {
     handleSubmit,
     setValue,
     setError,
-    getFieldState,
     formState: { errors },
   } = useForm<TodoItemType>({
     resolver: yupResolver(schema),
   });
 
-  const getTodoData = async () => {
-    try {
-      const list = await fetch(`/tasks/${id}`, {
-        method: "GET",
-      });
-      if (list.status === 200) {
-        const todoData = await list.json();
-        setValue("id", todoData.id);
-        setValue("title", todoData.title);
-      } else {
-        setError("title", { type: "manual", message: "Something went wrong" });
-      }
-    } catch (error: any) {
-      console.log("error", error);
-      setError("title", { type: "manual", message: "Something went wrong" });
-    }
-  };
+  const queryClient = useQueryClient();
 
+  const {
+    data: todoData,
+    isFetching,
+    error,
+  } = useQuery({
+    queryKey: ["todo"],
+    queryFn: () => getTodoById(parseInt(id)),
+  });
+
+  const updateTodoMutation = useMutation({
+    mutationFn: updateTodoData,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
+      router.back();
+    },
+    onError: () => {
+      setError("title", { type: "manual", message: "Something went wrong" });
+    },
+  });
+  // Replace this with react query mutation
   const onUpdate: SubmitHandler<TodoItemType> = async (todoData) => {
-    try {
-      const resp = await fetch(`/tasks/${todoData.id}`, {
-        method: "PUT",
-        body: JSON.stringify(todoData.title),
-      });
-      const data = await resp.json();
-      if (resp.status === 200) {
-        router.back();
-      } else {
-        setError("title", { type: "manual", message: "Something went wrong" });
-      }
-    } catch (error) {
-      console.log("error", error);
-      setError("title", { type: "manual", message: "Something went wrong" });
-    }
+    console.log("todoData", todoData);
+    updateTodoMutation.mutate(todoData);
   };
 
-  useEffect(() => {
-    getTodoData();
-  }, []);
+  if (isFetching) {
+    return (
+      <Center className="h-screen">
+        <Loader />
+      </Center>
+    );
+  }
+
+  if (error) {
+    setError("title", { type: "manual", message: "Something went wrong" });
+  }
+
+  if (todoData) {
+    setValue("id", todoData.id);
+    setValue("title", todoData.title);
+  }
 
   return (
     <TodoForm
