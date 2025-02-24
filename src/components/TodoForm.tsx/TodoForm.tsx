@@ -3,6 +3,7 @@ import { Button, Input, Text } from "@mantine/core";
 import React from "react";
 import { FieldErrors, UseFormRegister } from "react-hook-form";
 import Container from "../Container/Container";
+import { useRouter } from "next/router";
 
 // On Submit, Register and errors are three props will are required to be passed to this component
 interface TodoForm {
@@ -13,6 +14,9 @@ interface TodoForm {
 }
 // This is a common form component used to add new todo and to edit an exsiting todo
 const TodoForm = ({ onSubmit, register, errors, isEdit = false }: TodoForm) => {
+  const router = useRouter();
+  const { asPath } = router;
+  const hash = asPath.split("#")[1];
   return (
     <form onSubmit={onSubmit} className="w-full">
       <Container>
@@ -20,7 +24,9 @@ const TodoForm = ({ onSubmit, register, errors, isEdit = false }: TodoForm) => {
           placeholder={isEdit ? "Update the Todo" : "Add A New Todo"}
           variant="filled"
           size="sm"
-          className="w-full md:w-1/2 lg:w-1/3"
+          className={
+            hash === "table-view" ? "w-full" : "w-full md:w-1/2 lg:w-1/3"
+          }
           autoFocus={true}
           {...register("title", { required: true })}
         />

@@ -1,5 +1,5 @@
-import { http, HttpResponse } from "msw";
-import { TodoItemType } from "../types/types";
+import { DefaultBodyType, http, HttpResponse } from "msw";
+import { PaginationType, TodoItemType } from "../types/types";
 
 export const todoCRUD = [
   // Get all the todo items
@@ -100,7 +100,7 @@ export const todoCRUD = [
     let store: string = localStorage.getItem("todoData") || "";
     let todoData = store ? JSON.parse(store) : [];
     const searchTodoTitle = await request.json();
-    if(!searchTodoTitle) {
+    if (!searchTodoTitle) {
       return HttpResponse.json([], { status: 200 });
     }
     if (todoData.length === 0) {
@@ -113,5 +113,32 @@ export const todoCRUD = [
     );
     console.log("values", values);
     return HttpResponse.json(values, { status: 200 });
+  }),
+
+  //Pagination
+  http.post("/tasks/pagination/:sorting", async ({ request, params }) => {
+    let store: string = localStorage.getItem("todoData") || "";
+    let todoData = store ? JSON.parse(store) : [];
+    const sorting = params.sorting;
+    console.log("sorting", sorting);
+    const body = (await request.json()) as PaginationType;
+
+    const { pageSize, pageIndex } = body;
+    var paginatedData = [];
+    const startIndex = (pageIndex - 1) * pageSize;
+    const endIndex = pageIndex * pageSize;
+
+    paginatedData = [...todoData.slice(startIndex, endIndex)];
+    if (sorting === "asc") {
+      paginatedData = paginatedData.sort((a, b) =>
+        a.title.toString().localeCompare(b.title.toString())
+      );
+    }
+    if (sorting === "desc") {
+      paginatedData = paginatedData.sort((a, b) =>
+        b.title.toString().localeCompare(a.title.toString())
+      );
+    }
+    return HttpResponse.json({ paginatedData }, { status: 200 });
   }),
 ];

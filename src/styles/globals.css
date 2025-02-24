@@ -27,3 +27,7 @@ button:hover {
 button:focus {
   outline: none;
 }
+
+.tableWrapper {
+  height: calc(100vh - 144px);
+}

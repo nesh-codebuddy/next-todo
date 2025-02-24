@@ -22,6 +22,8 @@ const schema = yup
 const EditTodo = () => {
   const router = useRouter();
   const id = router.query.id;
+  const { asPath } = router;
+  const hash = asPath.split("#")[1];
 
   const {
     register,
@@ -68,7 +70,7 @@ const EditTodo = () => {
 
   if (isFetching) {
     return (
-      <Center className="h-screen">
+      <Center className={hash === "table-view" ? "" : "h-screen"}>
         <Loader />
       </Center>
     );

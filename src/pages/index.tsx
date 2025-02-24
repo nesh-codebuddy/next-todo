@@ -8,12 +8,17 @@ import Container from "@/components/Container/Container";
 import { CloseButton } from "@mantine/core";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteTodoById, getTodoList, searchTodo } from "@/services/queries";
+import { Switch } from "@mantine/core";
+import TodoTable from "@/components/TodoTable/TodoTable";
 
 const Home = () => {
   const router = useRouter();
+  const { asPath } = router;
+  const hash = asPath.split("#")[1];
   const [searchValue, setSearchValue] = useState("");
   const [searchResult, setSearchResult] = useState<Array<TodoItemType>>([]);
   const [apiError, setApiError] = useState<string>("");
+  const [tableView, setTableView] = useState<boolean>(false);
 
   const queryClient = useQueryClient();
   const {
@@ -24,6 +29,14 @@ const Home = () => {
     queryKey: ["todos"],
     queryFn: getTodoList,
   });
+
+  useEffect(() => {
+    if (hash === "table-view") {
+      setTableView(true);
+    } else {
+      setTableView(false);
+    }
+  }, [hash]);
 
   useEffect(() => {
     if (searchValue) {
@@ -91,6 +104,38 @@ const Home = () => {
           onClick={handleAdd}
         />
       </div>
+      <Switch
+        label="Table View"
+        checked={tableView}
+        onChange={(event) => {
+          const checked = event.currentTarget.checked;
+          if (checked) {
+            router.push(
+              {
+                pathname: "/",
+                hash: "#table-view",
+                query: {
+                  pageIndex: 1,
+                  pageSize: 5,
+                  sort: "no",
+                },
+              },
+              undefined,
+              { shallow: true }
+            );
+          } else {
+            router.replace(
+              {
+                pathname: "/",
+              },
+              undefined,
+              { shallow: true }
+            );
+          }
+          setTableView(checked);
+        }}
+        className="mt-4"
+      />
 
       {/* <AddTodo onCreate={getTodoList} /> */}
       {error && <Text c="red">{error?.message}</Text>}
@@ -101,29 +146,38 @@ const Home = () => {
       {todoList.length === 0 && !searchValue && (
         <Text className="text !mt-4">No Results Found</Text>
       )}
-      <div className="grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4 w-full gap-4">
-        {searchResult.length > 0 &&
-          searchValue &&
-          searchResult.map((todo) => (
-            <ListTodo
-              todo={todo}
-              deleteTodo={() => deleteTodo.mutate(todo.id)}
-              editTodo={() => handleEdit(todo.id)}
-              key={todo.id}
-            />
-          ))}
+      {tableView && (
+        <TodoTable
+          todoList={searchValue ? searchResult : todoList}
+          deleteTodo={deleteTodo.mutate}
+          setApiError={setApiError}
+        />
+      )}
+      {!tableView && (
+        <div className="grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4 w-full gap-4">
+          {searchResult.length > 0 &&
+            searchValue &&
+            searchResult.map((todo) => (
+              <ListTodo
+                todo={todo}
+                deleteTodo={() => deleteTodo.mutate(todo.id)}
+                editTodo={() => handleEdit(todo.id)}
+                key={todo.id}
+              />
+            ))}
 
-        {todoList.length > 0 &&
-          !searchValue &&
-          todoList.map((todo: TodoItemType) => (
-            <ListTodo
-              todo={todo}
-              deleteTodo={() => deleteTodo.mutate(todo.id)}
-              editTodo={() => handleEdit(todo.id)}
-              key={todo.id}
-            />
-          ))}
-      </div>
+          {todoList.length > 0 &&
+            !searchValue &&
+            todoList.map((todo: TodoItemType) => (
+              <ListTodo
+                todo={todo}
+                deleteTodo={() => deleteTodo.mutate(todo.id)}
+                editTodo={() => handleEdit(todo.id)}
+                key={todo.id}
+              />
+            ))}
+        </div>
+      )}
     </Container>
   );
 };

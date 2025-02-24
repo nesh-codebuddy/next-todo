@@ -1,0 +1,40 @@
+import { TodoItemType } from "@/types/types";
+import { createColumnHelper } from "@tanstack/react-table";
+
+const todoTableColumnHelper = createColumnHelper<TodoItemType>();
+
+export const todoTableColumns = [
+  todoTableColumnHelper.accessor("id", {
+    cell: (info) => info.getValue(),
+    header: "ID",
+    enableSorting: false,
+  }),
+  todoTableColumnHelper.accessor("title", {
+    cell: (info) => info.getValue(),
+    header: "Todo",
+    enableSorting: true,
+    sortingFn: "text",
+  }),
+];
+
+export const getSortDirection = (val: Array<any>) => {
+  let sortDirection = "no";
+  if (val.length === 1) {
+    const sortCol = val[0];
+    sortDirection = sortCol.desc ? "desc" : "asc";
+  }
+  return sortDirection;
+};
+
+export const setSortingDirection = (val: string) => {
+  if (val === "no") {
+    return [];
+  }
+  if (val === "asc") {
+    return [{ id: "title", desc: false }];
+  }
+  if (val === "desc") {
+    return [{ id: "title", desc: true }];
+  }
+  return [];
+};

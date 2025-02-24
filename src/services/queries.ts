@@ -1,4 +1,9 @@
-import { TodoFormType, TodoItemType } from "@/types/types";
+import {
+  PaginationType,
+  SortingType,
+  TodoFormType,
+  TodoItemType,
+} from "@/types/types";
 
 export const getTodoList = async () => {
   try {
@@ -88,6 +93,30 @@ export const searchTodo = async (title: string) => {
     const resp = await fetch("/tasks/search", {
       method: "POST",
       body: JSON.stringify(title),
+    });
+    const data = await resp.json();
+    if (resp.status === 200) {
+      return data;
+    } else {
+      throw new Error(data.msg);
+    }
+  } catch (error) {
+    throw new Error("Something went wrong");
+  }
+};
+
+export const paginationTodo = async ({
+  pageIndex,
+  pageSize,
+  sort,
+}: SortingType) => {
+  try {
+    const resp = await fetch(`/tasks/pagination/${sort}`, {
+      method: "POST",
+      body: JSON.stringify({ pageSize, pageIndex }),
+      headers: {
+        "Content-type": "application/json",
+      },
     });
     const data = await resp.json();
     if (resp.status === 200) {
