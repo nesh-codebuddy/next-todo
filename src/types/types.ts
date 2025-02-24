@@ -17,3 +17,14 @@ export interface PaginationType {
 export interface SortingType extends PaginationType {
   sort: string;
 }
+
+export interface UserType {
+  username: string;
+  email: string;
+}
+
+export interface UserStoreType {
+  username: string;
+  email: string;
+  updateUserdata: (userData: UserType ) => void;
+}

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Input, Text, Center, Loader } from "@mantine/core";
 import { TodoItemType } from "@/types/types";
-import { IconDeviceIpadPlus } from "@tabler/icons-react";
 import ListTodo from "@/components/ListTodo/ListTodo";
 import { useRouter } from "next/router";
 import Container from "@/components/Container/Container";
@@ -10,6 +9,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteTodoById, getTodoList, searchTodo } from "@/services/queries";
 import { Switch } from "@mantine/core";
 import TodoTable from "@/components/TodoTable/TodoTable";
+import TopMenu from "@/components/TopMenu/TopMenu";
 
 const Home = () => {
   const router = useRouter();
@@ -67,8 +67,6 @@ const Home = () => {
   const handleEdit = (id: number) =>
     router.push({ pathname: "/tasks/[id]/edit", query: { id } });
 
-  const handleAdd = () => router.push("/tasks/new");
-
   const handleSearch = (
     event: React.ChangeEvent<HTMLInputElement> | { target: { value: string } }
   ) => {
@@ -97,12 +95,7 @@ const Home = () => {
           variant="filled"
           onChange={handleSearch}
         />
-        <CloseButton
-          variant="filled"
-          color="gray"
-          icon={<IconDeviceIpadPlus />}
-          onClick={handleAdd}
-        />
+        <TopMenu />
       </div>
       <Switch
         label="Table View"
