@@ -16,7 +16,7 @@ initMocks();
 
 const queryClient = new QueryClient();
 
-const theme = createTheme({
+export const theme = createTheme({
   /** Put your mantine theme override here */
 });
 
