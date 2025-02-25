@@ -87,6 +87,17 @@ const Home = () => {
     );
   }
 
+  const renderTableView = () => {
+    if (!tableView) return false;
+    if (searchResult.length > 0 && searchValue) {
+      return true;
+    }
+    if (todoList.length > 0 && !searchValue) {
+      return true;
+    }
+    return false;
+  };
+
   return (
     <Container>
       <div className="flex w-full md:w-1/2 lg:w-1/3 items-center">
@@ -146,11 +157,12 @@ const Home = () => {
       {todoList.length === 0 && !searchValue && (
         <Text className="text !mt-4">No Results Found</Text>
       )}
-      {tableView && (
+      {renderTableView() && (
         <TodoTable
           todoList={searchValue ? searchResult : todoList}
           deleteTodo={deleteTodo.mutate}
           setApiError={setApiError}
+          isSearch={!!searchValue}
         />
       )}
       {!tableView && (
