@@ -24,12 +24,14 @@ interface TodoTableInterface {
   deleteTodo: (id: number) => void;
   todoList: Array<TodoItemType>;
   setApiError: React.Dispatch<React.SetStateAction<string>>;
+  isSearch: boolean;
 }
 
 const TodoTable: React.FC<TodoTableInterface> = ({
   todoList,
   deleteTodo,
   setApiError,
+  isSearch,
 }) => {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [pagination, setPagination] = useState<PaginationType>({
@@ -72,7 +74,7 @@ const TodoTable: React.FC<TodoTableInterface> = ({
   }, [query]);
 
   const todoTable = useReactTable({
-    data: paginatedTodo,
+    data: isSearch ? todoList : paginatedTodo,
     columns: todoTableColumns,
     getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
@@ -173,53 +175,55 @@ const TodoTable: React.FC<TodoTableInterface> = ({
         </Table.Tbody>
       </Table>
       <EditTodoModal open={openModal} setOpen={setOpenModal} />
-      <div className="flex flex-col sm:flex-row justify-center py-4 items-center">
-        <Pagination
-          total={Math.ceil(todoList.length / pagination.pageSize)}
-          value={pagination.pageIndex}
-          onChange={(page) => {
-            setPagination({ ...pagination, pageIndex: page });
-            router.replace(
-              {
-                pathname: "/",
-                hash: "table-view",
-                query: {
-                  pageIndex: page,
-                  pageSize: pagination.pageSize,
-                  sort: getSortDirection(sorting),
+      {!isSearch && (
+        <div className="flex flex-col sm:flex-row justify-center py-4 items-center">
+          <Pagination
+            total={Math.ceil(todoList.length / pagination.pageSize)}
+            value={pagination.pageIndex}
+            onChange={(page) => {
+              setPagination({ ...pagination, pageIndex: page });
+              router.replace(
+                {
+                  pathname: "/",
+                  hash: "table-view",
+                  query: {
+                    pageIndex: page,
+                    pageSize: pagination.pageSize,
+                    sort: getSortDirection(sorting),
+                  },
                 },
-              },
-              undefined,
-              { shallow: true }
-            );
-          }}
-        />
-        <Select
-          className="mt-4 sm:mt-0 sm:ml-4"
-          size="xs"
-          data={["5", "10", "15", "20"]}
-          value={pagination.pageSize.toString()}
-          onChange={(val) => {
-            setPagination({
-              ...pagination,
-              pageSize: parseInt(val!),
-            });
-            router.replace(
-              {
-                pathname: "/",
-                hash: "table-view",
-                query: {
-                  pageIndex: pagination.pageIndex,
-                  pageSize: val,
-                  sort: getSortDirection(sorting),
+                undefined,
+                { shallow: true }
+              );
+            }}
+          />
+          <Select
+            className="mt-4 sm:mt-0 sm:ml-4"
+            size="xs"
+            data={["5", "10", "15", "20"]}
+            value={pagination.pageSize.toString()}
+            onChange={(val) => {
+              setPagination({
+                ...pagination,
+                pageSize: parseInt(val!),
+              });
+              router.replace(
+                {
+                  pathname: "/",
+                  hash: "table-view",
+                  query: {
+                    pageIndex: pagination.pageIndex,
+                    pageSize: val,
+                    sort: getSortDirection(sorting),
+                  },
                 },
-              },
-              undefined,
-              { shallow: true }
-            );
-          }}
-        />
-      </div>
+                undefined,
+                { shallow: true }
+              );
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 };
