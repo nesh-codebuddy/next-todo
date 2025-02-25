@@ -16,7 +16,7 @@ import { Button, Table } from "@mantine/core";
 import EditTodoModal from "../EditTodoModal/EditTodoModal";
 import { useRouter } from "next/router";
 import { Pagination, Select } from "@mantine/core";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { paginationTodo } from "@/services/queries";
 import { error } from "console";
 
@@ -54,8 +54,13 @@ const TodoTable: React.FC<TodoTableInterface> = ({
 
   const { query } = router;
 
+  console.log("query", query);
+
   useEffect(() => {
+    console.log("test");
     if (query && query.pageIndex) {
+      console.log("test inside");
+
       setPagination({
         pageIndex: parseInt(query.pageIndex?.toString()!),
         pageSize: parseInt(query.pageSize?.toString()!),

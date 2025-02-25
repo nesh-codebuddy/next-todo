@@ -39,6 +39,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "msw": "^2.7.0",
+    "msw-storybook-addon": "^2.0.4",
     "postcss": "^8",
     "storybook": "^8.5.8",
     "storybook-dark-mode": "^4.0.2",
