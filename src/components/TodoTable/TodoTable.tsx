@@ -54,13 +54,8 @@ const TodoTable: React.FC<TodoTableInterface> = ({
 
   const { query } = router;
 
-  console.log("query", query);
-
   useEffect(() => {
-    console.log("test");
     if (query && query.pageIndex) {
-      console.log("test inside");
-
       setPagination({
         pageIndex: parseInt(query.pageIndex?.toString()!),
         pageSize: parseInt(query.pageSize?.toString()!),
