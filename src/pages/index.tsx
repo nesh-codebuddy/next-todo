@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Input, Text } from "@mantine/core";
-import { TodoItemType } from "@/types/types";
+import { ITodoItemType } from "@/types/types";
 import { IconDeviceIpadPlus } from "@tabler/icons-react";
 import ListTodo from "@/components/ListTodo/ListTodo";
 import { useRouter } from "next/router";
@@ -9,16 +9,14 @@ import { CloseButton } from "@mantine/core";
 
 const Home = () => {
   const router = useRouter();
-  const [todoList, setTodoList] = useState<Array<TodoItemType>>([]);
+  const [todoList, setTodoList] = useState<Array<ITodoItemType>>([]);
   const [searchValue, setSearchValue] = useState("");
-  const [searchResult, setSearchResult] = useState<Array<TodoItemType>>([]);
+  const [searchResult, setSearchResult] = useState<Array<ITodoItemType>>([]);
   const [apiError, setApiError] = useState<string | Error>("");
 
   const getTodoList = async () => {
     try {
-      const list = await fetch("/tasks", {
-        method: "GET",
-      });
+      const list = await fetch("/tasks");
       const todoData = await list.json();
       if (list.status === 200) {
         setTodoList(todoData);
@@ -42,13 +40,15 @@ const Home = () => {
     }
   }, [todoList]);
 
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement> | { target: { value: string } }) => {
+  const handleSearch = (
+    event: React.ChangeEvent<HTMLInputElement> | { target: { value: string } }
+  ) => {
     const {
       target: { value },
     } = event;
     setSearchValue(value);
     if (!value) return;
-    const values = todoList.filter((todo: TodoItemType) =>
+    const values = todoList.filter((todo: ITodoItemType) =>
       todo.title.toLowerCase().includes(value.toLowerCase())
     );
     setSearchResult(values);
@@ -97,7 +97,7 @@ const Home = () => {
       </div>
 
       {/* <AddTodo onCreate={getTodoList} /> */}
-      {apiError && <Text c="red">{apiError}</Text>}
+      {apiError && <Text c="red">{`${apiError}`}</Text>}
       <div className="grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4 w-full gap-4">
         {searchResult.length > 0 &&
           searchValue &&

@@ -1,5 +1,5 @@
 import { http, HttpResponse } from "msw";
-import { TodoItemType } from "../types/types";
+import { ITodoItemType } from "../types/types";
 
 export const todoCRUD = [
   // Get all the todo items
@@ -14,17 +14,17 @@ export const todoCRUD = [
     let store: string = localStorage.getItem("todoData") || "";
     let todoData = store ? JSON.parse(store) : [];
     if (!params.id) {
-      return HttpResponse.text("No Id found to delete", { status: 500 });
+      return HttpResponse.text("No Id found to delete", { status: 404 });
     }
-    let todoId = parseInt(params.id);
+    let todoId = parseInt(`${params.id}`);
     if (typeof todoId === "number") {
       const todoItemIndex = todoData.findIndex(
-        (todo: TodoItemType) => todo.id === todoId
+        (todo: ITodoItemType) => todo.id === todoId
       );
       const currentTodo = todoData[todoItemIndex];
       return HttpResponse.json(currentTodo, { status: 200 });
     } else {
-      return HttpResponse.json({ msg: "No Id Found" }, { status: 500 });
+      return HttpResponse.json({ msg: "No Id Found" }, { status: 404 });
     }
   }),
 
@@ -53,18 +53,18 @@ export const todoCRUD = [
     let store: string = localStorage.getItem("todoData") || "";
     let todoData = store ? JSON.parse(store) : [];
     if (!params.id) {
-      return HttpResponse.text("No Id found to delete", { status: 500 });
+      return HttpResponse.text("No Id found to delete", { status: 404 });
     }
-    let todoId = parseInt(params.id);
+    let todoId = parseInt(`${params.id}`);
     if (typeof todoId === "number") {
       const todoItemIndex = todoData.findIndex(
-        (todo: TodoItemType) => todo.id === todoId
+        (todo: ITodoItemType) => todo.id === todoId
       );
       todoData[todoItemIndex].title = newTodoTitle;
       localStorage.setItem("todoData", JSON.stringify(todoData));
       return HttpResponse.json(todoData[todoItemIndex], { status: 200 });
     } else {
-      return HttpResponse.json({ msg: "No Id Found" }, { status: 500 });
+      return HttpResponse.json({ msg: "No Id Found" }, { status: 404 });
     }
   }),
 
@@ -73,15 +73,15 @@ export const todoCRUD = [
     let store: string = localStorage.getItem("todoData") || "";
     let todoData = store ? JSON.parse(store) : [];
     if (todoData.length === 0) {
-      return HttpResponse.text("No Record to delete", { status: 500 });
+      return HttpResponse.text("No Record to delete", { status: 404 });
     }
     if (!params.id) {
-      return HttpResponse.text("No Id found to delete", { status: 500 });
+      return HttpResponse.text("No Id found to delete", { status: 404 });
     }
-    let todoId = parseInt(params.id);
+    let todoId = parseInt(`${params.id}`);
     if (typeof todoId === "number") {
       const todoItemIndex = todoData.findIndex(
-        (todo: TodoItemType) => todo.id === todoId
+        (todo: ITodoItemType) => todo.id === todoId
       );
       const currentTodo = todoData[todoItemIndex];
       todoData = [
@@ -91,7 +91,7 @@ export const todoCRUD = [
       localStorage.setItem("todoData", JSON.stringify(todoData));
       return HttpResponse.json(currentTodo, { status: 200 });
     } else {
-      return HttpResponse.json({ msg: "No Id Found" }, { status: 500 });
+      return HttpResponse.json({ msg: "No Id Found" }, { status: 404 });
     }
   }),
 ];
