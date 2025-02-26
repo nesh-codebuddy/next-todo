@@ -2,23 +2,27 @@ import React, { useState } from "react";
 import { Input, Text } from "@mantine/core";
 import { Button } from "@mantine/core";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { TodoItemType } from "@/types/types";
+import { ITodoItemType } from "@/types/types";
 
-interface AddTodoInterface {
+interface IAddTodo {
   onCreate: Function;
 }
 
-const AddTodo: React.FC<AddTodoInterface> = ({ onCreate }) => {
+const AddTodo: React.FC<IAddTodo> = ({ onCreate }) => {
+  const [currentTodo, setCurrentTodo] = useState<string>("");
+  const [error, setError] = useState<boolean>(false);
+  const [apiError, setApiError] = useState<string | Error>("");
+
+
   const {
     register,
     handleSubmit,
     watch,
     setValue,
     formState: { errors },
-  } = useForm<TodoItemType>();
+  } = useForm<ITodoItemType>();
   //   const [currentTodo, setCurrentTodo] = useState<string>("");
   //   const [error, setError] = useState<boolean>(false);
-  const [apiError, setApiError] = useState<string | Error>("");
 
   //   const handleTodoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   //     const {
@@ -28,7 +32,7 @@ const AddTodo: React.FC<AddTodoInterface> = ({ onCreate }) => {
   //     setCurrentTodo(value);
   //   };
 
-  const onSubmit: SubmitHandler<TodoItemType> = async (data) => {
+  const onSubmit: SubmitHandler<ITodoItemType> = async (data) => {
     // if (!currentTodo) {
     //   setError(true);
     //   return;
@@ -47,8 +51,8 @@ const AddTodo: React.FC<AddTodoInterface> = ({ onCreate }) => {
         setApiError(todoResp.msg);
       }
     } catch (error) {
-      if(error instanceof Error) {
-        setApiError(error);
+      if (error instanceof Error) {
+        setApiError(error.message);
       }
     }
   };
