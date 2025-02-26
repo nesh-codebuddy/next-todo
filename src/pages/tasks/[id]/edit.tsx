@@ -1,5 +1,5 @@
 import Container from "@/components/Container/Container";
-import { TodoItemType } from "@/types/types";
+import { ITodoItemType } from "@/types/types";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -29,7 +29,7 @@ const EditTodo = () => {
     setValue,
     setError,
     formState: { errors },
-  } = useForm<TodoItemType>({
+  } = useForm<ITodoItemType>({
     resolver: yupResolver(schema),
   });
 
@@ -62,7 +62,7 @@ const EditTodo = () => {
     },
   });
   // Replace this with react query mutation
-  const onUpdate: SubmitHandler<TodoItemType> = async (todoData) => {
+  const onUpdate: SubmitHandler<ITodoItemType> = async (todoData) => {
     updateTodoMutation.mutate(todoData);
   };
 

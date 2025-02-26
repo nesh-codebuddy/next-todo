@@ -1,8 +1,8 @@
-export interface TodoItemType {
+export interface ITodoItemType {
     id: number;
     title: string;
 }
 
-export interface TodoFormType {
+export interface ITodoFormType {
     title: string;
 }
