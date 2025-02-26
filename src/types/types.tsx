@@ -1,4 +1,4 @@
-export interface TodoItemType {
+export interface ITodoItemType {
     id: number;
     title: string;
 }

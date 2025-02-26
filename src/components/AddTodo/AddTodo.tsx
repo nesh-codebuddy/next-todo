@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { Input, Text } from "@mantine/core";
 import { Button } from "@mantine/core";
 
-interface AddTodoInterface {
+interface IAddTodo {
   onCreate: Function;
 }
 
-const AddTodo: React.FC<AddTodoInterface> = ({ onCreate }) => {
+const AddTodo: React.FC<IAddTodo> = ({ onCreate }) => {
   const [currentTodo, setCurrentTodo] = useState<string>("");
   const [error, setError] = useState<boolean>(false);
-  const [apiError, setApiError] = useState<string>("");
+  const [apiError, setApiError] = useState<string | Error>("");
 
   const handleTodoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const {
@@ -33,8 +33,10 @@ const AddTodo: React.FC<AddTodoInterface> = ({ onCreate }) => {
         onCreate();
         setCurrentTodo("");
       }
-    } catch (error: any) {
-      setApiError(error.msg);
+    } catch (error) {
+      if (error instanceof Error) {
+        setApiError(error.message);
+      }
     }
   };
 

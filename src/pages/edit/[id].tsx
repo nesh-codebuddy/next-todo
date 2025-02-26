@@ -1,5 +1,5 @@
 import Container from "@/components/Container/Container";
-import { TodoItemType } from "@/types/types";
+import { ITodoItemType } from "@/types/types";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { Button, Text, Textarea } from "@mantine/core";
@@ -10,16 +10,14 @@ const EditTodo = () => {
 
   const [error, setError] = useState<boolean>(false);
   const [apiError, setApiError] = useState<string | Error>("");
-  const [currentTodo, setCurrentTodo] = useState<TodoItemType>({
+  const [currentTodo, setCurrentTodo] = useState<ITodoItemType>({
     id: 0,
     title: "",
   });
 
   const getTodoData = async () => {
     try {
-      const list = await fetch(`/tasks/${id}`, {
-        method: "GET",
-      });
+      const list = await fetch(`/tasks/${id}`);
       const todoData = await list.json();
       if (list.status === 200) {
         setCurrentTodo(todoData);

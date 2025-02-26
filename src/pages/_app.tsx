@@ -5,6 +5,9 @@ import { createTheme, MantineProvider } from "@mantine/core";
 
 async function initMocks() {
   if (typeof window === "undefined") {
+    const { server } = await import("@/mocks/server");
+    server.listen({ onUnhandledRequest: "bypass" });
+    console.log("MSW started on server");
   } else {
     const { worker } = await import("@/mocks/browser");
     await worker.start({ onUnhandledRequest: "bypass" });
