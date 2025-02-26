@@ -41,7 +41,7 @@ const EditTodo = () => {
     error,
   } = useQuery({
     queryKey: ["todo"],
-    queryFn: () => getTodoById(parseInt(id)),
+    queryFn: () => getTodoById(parseInt(`${id}`)),
   });
 
   useEffect(() => {
