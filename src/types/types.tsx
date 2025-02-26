@@ -3,6 +3,6 @@ export interface ITodoItemType {
     title: string;
 }
 
-export interface TodoFormType {
+export interface ITodoFormType {
     title: string;
 }

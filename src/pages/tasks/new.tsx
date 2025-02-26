@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { TodoFormType } from "@/types/types";
+import { ITodoFormType } from "@/types/types";
 import { useRouter } from "next/router";
 import TodoForm from "@/components/TodoForm.tsx/TodoForm";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -19,13 +19,13 @@ const NewTodo = () => {
     setValue,
     setError,
     formState: { errors },
-  } = useForm<TodoFormType>({
+  } = useForm<ITodoFormType>({
     resolver: yupResolver(schema),
   });
 
   const router = useRouter();
 
-  const onSubmit: SubmitHandler<TodoFormType> = async (data) => {
+  const onSubmit: SubmitHandler<ITodoFormType> = async (data) => {
     try {
       const resp = await fetch("/tasks", {
         method: "POST",
