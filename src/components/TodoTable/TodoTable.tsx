@@ -1,4 +1,4 @@
-import { PaginationType, TodoItemType } from "@/types/types";
+import { IPaginationType, ITodoItemType } from "@/types/types";
 import React, { useState, useEffect } from "react";
 import {
   flexRender,
@@ -20,26 +20,26 @@ import { useMutation } from "@tanstack/react-query";
 import { paginationTodo } from "@/services/queries";
 import { error } from "console";
 
-interface TodoTableInterface {
+interface ITodoTable {
   deleteTodo: (id: number) => void;
-  todoList: Array<TodoItemType>;
+  todoList: Array<ITodoItemType>;
   setApiError: React.Dispatch<React.SetStateAction<string>>;
   isSearch: boolean;
 }
 
-const TodoTable: React.FC<TodoTableInterface> = ({
+const TodoTable: React.FC<ITodoTable> = ({
   todoList,
   deleteTodo,
   setApiError,
   isSearch,
 }) => {
   const [openModal, setOpenModal] = useState<boolean>(false);
-  const [pagination, setPagination] = useState<PaginationType>({
+  const [pagination, setPagination] = useState<IPaginationType>({
     pageIndex: 1,
     pageSize: 5,
   });
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [paginatedTodo, setPaginatedTodo] = useState<Array<TodoItemType>>([]);
+  const [paginatedTodo, setPaginatedTodo] = useState<Array<ITodoItemType>>([]);
   const router = useRouter();
 
   const paginationMutation = useMutation({

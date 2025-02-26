@@ -1,10 +1,10 @@
 import React from "react";
 
-interface ContainerInterface {
+interface IContainer {
   children: React.ReactNode;
 }
 
-const Container: React.FC<ContainerInterface> = ({ children }) => {
+const Container: React.FC<IContainer> = ({ children }) => {
   return (
     <div className="lg:container mx-auto p-6 flex flex-col items-center">
       {children}
