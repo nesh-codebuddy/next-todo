@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Input, Text, Center, Loader } from "@mantine/core";
-import { TodoItemType } from "@/types/types";
+import { ITodoItemType } from "@/types/types";
 import { IconDeviceIpadPlus } from "@tabler/icons-react";
 import ListTodo from "@/components/ListTodo/ListTodo";
 import { useRouter } from "next/router";
@@ -16,10 +16,9 @@ const Home = () => {
   const { asPath } = router;
   const hash = asPath.split("#")[1];
   const [searchValue, setSearchValue] = useState("");
-  const [searchResult, setSearchResult] = useState<Array<TodoItemType>>([]);
+  const [searchResult, setSearchResult] = useState<Array<ITodoItemType>>([]);
   const [apiError, setApiError] = useState<string>("");
   const [tableView, setTableView] = useState<boolean>(false);
-
   const queryClient = useQueryClient();
   const {
     data: todoList = [],
@@ -150,7 +149,7 @@ const Home = () => {
 
       {/* <AddTodo onCreate={getTodoList} /> */}
       {error && <Text c="red">{error?.message}</Text>}
-      {apiError && <Text c="red">{apiError}</Text>}
+      {apiError && <Text c="red">{`${apiError}`}</Text>}
       {searchValue && searchResult.length === 0 && (
         <Text className="text !mt-4">No Search Result Found</Text>
       )}
@@ -180,7 +179,7 @@ const Home = () => {
 
           {todoList.length > 0 &&
             !searchValue &&
-            todoList.map((todo: TodoItemType) => (
+            todoList.map((todo: ITodoItemType) => (
               <ListTodo
                 todo={todo}
                 deleteTodo={() => deleteTodo.mutate(todo.id)}

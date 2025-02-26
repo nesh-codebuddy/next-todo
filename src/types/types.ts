@@ -1,19 +1,19 @@
 import { DefaultBodyType } from "msw";
 
-export interface TodoItemType {
+export interface ITodoItemType {
   id: number;
   title: string;
 }
 
-export interface TodoFormType {
+export interface ITodoFormType {
   title: string;
 }
 
-export interface PaginationType {
+export interface IPaginationType {
   pageIndex: number;
   pageSize: number;
 }
 
-export interface SortingType extends PaginationType {
+export interface ISortingType extends IPaginationType {
   sort: string;
 }

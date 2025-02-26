@@ -1,9 +1,4 @@
-import {
-  PaginationType,
-  SortingType,
-  TodoFormType,
-  TodoItemType,
-} from "@/types/types";
+import { ISortingType, ITodoFormType, ITodoItemType } from "@/types/types";
 
 export const getTodoList = async () => {
   try {
@@ -54,7 +49,7 @@ export const getTodoById = async (id: number) => {
   }
 };
 
-export const updateTodoData = async (todoData: TodoItemType) => {
+export const updateTodoData = async (todoData: ITodoItemType) => {
   try {
     const resp = await fetch(`/tasks/${todoData.id}`, {
       method: "PUT",
@@ -71,7 +66,7 @@ export const updateTodoData = async (todoData: TodoItemType) => {
   }
 };
 
-export const createTodo = async (todoData: TodoFormType) => {
+export const createTodo = async (todoData: ITodoFormType) => {
   try {
     const resp = await fetch("/tasks", {
       method: "POST",
@@ -109,7 +104,7 @@ export const paginationTodo = async ({
   pageIndex,
   pageSize,
   sort,
-}: SortingType) => {
+}: ISortingType) => {
   try {
     const resp = await fetch(`/tasks/pagination/${sort}`, {
       method: "POST",
