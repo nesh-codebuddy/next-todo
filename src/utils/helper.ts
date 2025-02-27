@@ -1,7 +1,7 @@
-import { TodoItemType } from "@/types/types";
+import { ITodoItemType } from "@/types/types";
 import { createColumnHelper } from "@tanstack/react-table";
 
-const todoTableColumnHelper = createColumnHelper<TodoItemType>();
+const todoTableColumnHelper = createColumnHelper<ITodoItemType>();
 
 export const todoTableColumns = [
   todoTableColumnHelper.accessor("id", {
