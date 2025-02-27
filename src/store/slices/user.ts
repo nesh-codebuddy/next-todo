@@ -1,5 +1,6 @@
 import { UserType } from "@/types/types";
 
+// Zustand User Slice
 const createUserSlice = (set, ...rest) => ({
   username: "",
   email: "",

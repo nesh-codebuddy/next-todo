@@ -1,8 +1,9 @@
-import { TodoItemType } from "@/types/types";
+import { ITodoItemType } from "@/types/types";
 import { createColumnHelper } from "@tanstack/react-table";
 
-const todoTableColumnHelper = createColumnHelper<TodoItemType>();
+const todoTableColumnHelper = createColumnHelper<ITodoItemType>();
 
+// Todo Table Columns
 export const todoTableColumns = [
   todoTableColumnHelper.accessor("id", {
     cell: (info) => info.getValue(),
@@ -17,6 +18,7 @@ export const todoTableColumns = [
   }),
 ];
 
+// Helper function to get the current sorting direction
 export const getSortDirection = (val: Array<any>) => {
   let sortDirection = "no";
   if (val.length === 1) {
@@ -26,6 +28,7 @@ export const getSortDirection = (val: Array<any>) => {
   return sortDirection;
 };
 
+// Helper function to structure the sorting direction data
 export const setSortingDirection = (val: string) => {
   if (val === "no") {
     return [];

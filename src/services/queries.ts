@@ -1,10 +1,9 @@
 import { ISortingType, ITodoFormType, ITodoItemType } from "@/types/types";
 
+// Get API function used in Tanstack Query
 export const getTodoList = async () => {
   try {
-    const list = await fetch("/tasks", {
-      method: "GET",
-    });
+    const list = await fetch("/tasks");
     const todoData = await list.json();
     if (list.status === 200) {
       return todoData;
@@ -16,6 +15,7 @@ export const getTodoList = async () => {
   }
 };
 
+//Delete API Function used in Tanstack query
 export const deleteTodoById = async (id: number) => {
   try {
     const resp = await fetch(`/tasks/${id}`, {
@@ -32,11 +32,10 @@ export const deleteTodoById = async (id: number) => {
   }
 };
 
+// Get API to get a todo by it'd unique ID
 export const getTodoById = async (id: number) => {
   try {
-    const list = await fetch(`/tasks/${id}`, {
-      method: "GET",
-    });
+    const list = await fetch(`/tasks/${id}`);
 
     const todoData = await list.json();
     if (list.status === 200) {
@@ -49,6 +48,8 @@ export const getTodoById = async (id: number) => {
   }
 };
 
+
+//Update API to update a selected Todo with it's unique ID
 export const updateTodoData = async (todoData: ITodoItemType) => {
   try {
     const resp = await fetch(`/tasks/${todoData.id}`, {
@@ -66,6 +67,7 @@ export const updateTodoData = async (todoData: ITodoItemType) => {
   }
 };
 
+//Post API to Create a New Todo
 export const createTodo = async (todoData: ITodoFormType) => {
   try {
     const resp = await fetch("/tasks", {
@@ -83,6 +85,7 @@ export const createTodo = async (todoData: ITodoFormType) => {
   }
 };
 
+// Search API used to implement sever side search functionality
 export const searchTodo = async (title: string) => {
   try {
     const resp = await fetch("/tasks/search", {
@@ -100,6 +103,7 @@ export const searchTodo = async (title: string) => {
   }
 };
 
+// Pagination API used to implement server side pagination functionality
 export const paginationTodo = async ({
   pageIndex,
   pageSize,

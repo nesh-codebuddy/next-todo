@@ -95,7 +95,7 @@ export const todoCRUD = [
     }
   }),
 
-  //Search API
+  //Search API used for server side search
   http.post("/tasks/search", async ({ request }) => {
     let store: string = localStorage.getItem("todoData") || "";
     let todoData = store ? JSON.parse(store) : [];
@@ -104,7 +104,7 @@ export const todoCRUD = [
       return HttpResponse.json([], { status: 200 });
     }
     if (todoData.length === 0) {
-      return HttpResponse.json({ msg: "No Todo to Search" }, { status: 500 });
+      return HttpResponse.json({ msg: "No Todo to Search" }, { status: 404 });
     }
     const values = todoData.filter((todo: ITodoItemType) =>
       todo.title
@@ -115,7 +115,7 @@ export const todoCRUD = [
     return HttpResponse.json(values, { status: 200 });
   }),
 
-  //Pagination
+  //Pagination API used for server side pagination
   http.post("/tasks/pagination/:sorting", async ({ request, params }) => {
     let store: string = localStorage.getItem("todoData") || "";
     let todoData = store ? JSON.parse(store) : [];
