@@ -118,3 +118,23 @@ export const SearchedData: Story = {
     isSearch: true,
   },
 };
+
+export const PaginatedData: Story = {
+  args: {
+    todoList: [{ id: 1, title: "This is a sample todo" }],
+    isSearch: false,
+  },
+  parameters: {
+    nextjs: {
+      router: {
+        basePath: "/",
+        query: {
+          pageIndex: 1,
+          pageSize: 10,
+          sort: "asc",
+        },
+        hash: "table-view",
+      },
+    },
+  },
+};

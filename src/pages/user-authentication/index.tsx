@@ -15,7 +15,7 @@ const userFormSchema = yup
   })
   .required();
 
-const Login = () => {
+const UserAuthentication = () => {
   const {
     register,
     handleSubmit,
@@ -74,4 +74,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default UserAuthentication;
